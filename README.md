@@ -1,4 +1,4 @@
-//added new line for test pull SCM
+//edit this doc
 
 //test multibranch
 # java-tomcat-maven-example
