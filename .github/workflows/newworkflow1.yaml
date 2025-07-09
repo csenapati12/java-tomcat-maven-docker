@@ -1,0 +1,46 @@
+name: Delete Remote Branches Older Than 90 Days
+
+on:
+#  schedule:
+#    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
+  workflow_dispatch:     # Allow manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important: get full history
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Delete Remote Branches Older Than 30 Days
+        env:
+          REMOTE: origin
+          DAYS: 90
+        run: |
+          git fetch --prune
+
+          for branch in $(git for-each-ref --format='%(refname:short) %(committerdate:iso8601)' refs/remotes/${REMOTE} | while read b d; do
+              commit_date=$(date -d "$d" +%s)
+              now=$(date +%s)
+              age=$(( (now - commit_date) / 86400 ))
+
+              # Skip protected branches
+              if [[ "$b" =~ ^${REMOTE}/(main|master|dev|develop|master)$ ]]; then
+                  continue
+              fi
+
+              if [ $age -gt $DAYS ]; then
+                  echo $b
+              fi
+          done); do
+              echo "Deleting remote branch: $branch"
+             # git push --delete $REMOTE ${branch#"$REMOTE/"}
+          done
