@@ -42,5 +42,5 @@ jobs:
               fi
           done); do
               echo "Deleting remote branch: $branch"
-              git push --delete $REMOTE ${branch#"$REMOTE/"}
+             # git push --delete $REMOTE ${branch#"$REMOTE/"}
           done
