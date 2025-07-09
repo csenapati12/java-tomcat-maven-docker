@@ -1,9 +1,9 @@
 name: Delete Remote Branches Older Than 90 Days
 
 on:
-#  schedule:
-#    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
-  workflow_dispatch:     # Allow manual trigger
+ push:
+    branches:
+      - stalebranch
 
 jobs:
   cleanup:
