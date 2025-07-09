@@ -1,9 +1,7 @@
 name: Delete Remote Branches Older Than 90 Days
 
 on:
- push:
-    branches:
-      - feat/stalebranch
+  workflow_dispatch:
 
 jobs:
   cleanup:
