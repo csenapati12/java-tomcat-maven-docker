@@ -1,0 +1,30 @@
+name: Deploy Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENV_NAME:
+        description: 'Please select the environment to Deploy!!!'
+        required: true
+        type: choice
+        options:
+          - DeployL1_L2_L3
+          - L4
+          - L6
+      APP_NAME:
+        description: 'Please select the application!!!'
+        required: true
+        type: choice
+        options:
+          - HSVALIDATION_BUSINESS_SERVICE
+          - HSVALIDATION_DATA_SERVICE
+          - HSVALIDATION_BUSINESS_SERVICE1
+          - HSVALIDATION_DATA_SERVICE2
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code checkout
+        if: ${{ github.event.inputs.ENV_NAME == 'DeployL1_L2_L3' }}
+        run: echo "hello"
