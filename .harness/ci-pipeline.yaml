@@ -5,7 +5,7 @@ pipeline:
   orgIdentifier: default
 
   properties:
-    ci:
+   type: ci
       codebase:
         connectorRef: github_conn
         repoName: java-tomcat-maven-docker
