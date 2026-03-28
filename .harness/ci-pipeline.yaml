@@ -2,13 +2,23 @@ pipeline:
   name: remote-pipeline
   identifier: remote_pipeline
 
+  properties:
+    ci:
+      codebase:
+        connectorRef: Github          # 👈 your GitHub connector
+        repoName: java-tomcat-maven-docker # 👈 your repo name
+        build:
+          type: branch
+          spec:
+            branch: master                 # 👈 your branch
+
   stages:
     - stage:
         name: Build
         identifier: build
         type: CI
         spec:
-          cloneCodebase: true   # 👈 IMPORTANT FIX
+          cloneCodebase: true
 
           infrastructure:
             type: Cloud
@@ -22,4 +32,7 @@ pipeline:
                   identifier: hello_step
                   spec:
                     shell: Sh
-                    command: echo "Running from GitHub YAML"
+                    command: |
+                      echo "Running from Harness"
+                      pwd
+                      ls -lrt
