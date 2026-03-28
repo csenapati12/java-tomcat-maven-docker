@@ -16,6 +16,7 @@ pipeline:
               - step:
                   type: Run
                   name: Hello
+                  identifier: hello_step   # 👈 REQUIRED
                   spec:
                     shell: Sh
                     command: echo "Running from GitHub YAML"
