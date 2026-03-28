@@ -8,15 +8,18 @@ pipeline:
         identifier: build
         type: CI
         spec:
+          cloneCodebase: true   # 👈 IMPORTANT FIX
+
           infrastructure:
             type: Cloud
             spec: {}
+
           execution:
             steps:
               - step:
                   type: Run
                   name: Hello
-                  identifier: hello_step   # 👈 REQUIRED
+                  identifier: hello_step
                   spec:
                     shell: Sh
                     command: echo "Running from GitHub YAML"
