@@ -1,21 +1,23 @@
 pipeline:
-  name: remote-pipeline
-  identifier: remote_pipeline
+  name: harness-remote
+  identifier: harnessremote
+  projectIdentifier: harnessci
+  orgIdentifier: default
 
   properties:
     ci:
       codebase:
-        connectorRef: Github          # 👈 your GitHub connector
-        repoName: java-tomcat-maven-docker # 👈 your repo name
+        connectorRef: github_conn
+        repoName: java-tomcat-maven-docker
         build:
           type: branch
           spec:
-            branch: master                 # 👈 your branch
+            branch: master
 
   stages:
     - stage:
-        name: Build
-        identifier: build
+        name: Build_and_Package
+        identifier: build_and_package
         type: CI
         spec:
           cloneCodebase: true
@@ -26,13 +28,53 @@ pipeline:
 
           execution:
             steps:
+
+              # 🔹 Step 1: Verify Repo
               - step:
                   type: Run
-                  name: Hello
-                  identifier: hello_step
+                  name: Verify Repo
+                  identifier: verify_repo
                   spec:
                     shell: Sh
                     command: |
-                      echo "Running from Harness"
+                      echo "Working directory:"
                       pwd
+                      echo "Listing files:"
                       ls -lrt
+
+              # 🔹 Step 2: Maven Build (WAR Packaging)
+              - step:
+                  type: Run
+                  name: Maven Build
+                  identifier: maven_build
+                  spec:
+                    image: maven:3.9.6-eclipse-temurin-17
+                    shell: Sh
+                    command: |
+                      echo "Starting Maven Build..."
+                      mvn clean package -DskipTests
+
+              # 🔹 Step 3: Verify WAR Artifact
+              - step:
+                  type: Run
+                  name: Verify WAR
+                  identifier: verify_war
+                  spec:
+                    shell: Sh
+                    command: |
+                      echo "Checking target directory..."
+                      ls -lrt target/
+                      echo "WAR files:"
+                      ls target/*.war || echo "No WAR found"
+
+              # 🔹 Step 4: Artifact Info
+              - step:
+                  type: Run
+                  name: Artifact Info
+                  identifier: artifact_info
+                  spec:
+                    shell: Sh
+                    command: |
+                      echo "Build completed successfully"
+                      echo "Build Number: <+pipeline.sequenceId>"
+                      echo "Branch: <+codebase.branch>"
