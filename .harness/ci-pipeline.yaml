@@ -1,0 +1,21 @@
+pipeline:
+  name: remote-pipeline
+  identifier: remote_pipeline
+
+  stages:
+    - stage:
+        name: Build
+        identifier: build
+        type: CI
+        spec:
+          infrastructure:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Hello
+                  spec:
+                    shell: Sh
+                    command: echo "Running from GitHub YAML"
