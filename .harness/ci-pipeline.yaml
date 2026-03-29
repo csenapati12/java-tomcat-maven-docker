@@ -24,11 +24,11 @@ pipeline:
 
           infrastructure:
             type: Cloud
-            spec: {}
+            spec:
+              connectorRef: account.harnessImage   # 👈 FIX
 
           execution:
             steps:
-
               - step:
                   type: Run
                   name: Verify Repo
@@ -36,9 +36,7 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |
-                      echo "Working directory:"
                       pwd
-                      echo "Listing files:"
                       ls -lrt
 
               - step:
@@ -49,7 +47,6 @@ pipeline:
                     image: maven:3.9.6-eclipse-temurin-17
                     shell: Sh
                     command: |
-                      echo "Starting Maven Build..."
                       mvn clean package -DskipTests
 
               - step:
@@ -59,18 +56,5 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |
-                      echo "Checking target directory..."
                       ls -lrt target/ || echo "No target folder"
-                      echo "WAR files:"
                       ls target/*.war || echo "No WAR found"
-
-              - step:
-                  type: Run
-                  name: Artifact Info
-                  identifier: artifact_info
-                  spec:
-                    shell: Sh
-                    command: |
-                      echo "Build completed successfully"
-                      echo "Build Number: <+pipeline.sequenceId>"
-                      echo "Branch: <+codebase.branch>"
