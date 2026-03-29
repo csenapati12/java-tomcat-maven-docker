@@ -5,7 +5,7 @@ pipeline:
   orgIdentifier: default
 
   properties:
-   type: ci
+    ci:
       codebase:
         connectorRef: github_conn
         repoName: java-tomcat-maven-docker
@@ -29,7 +29,6 @@ pipeline:
           execution:
             steps:
 
-              # 🔹 Step 1: Verify Repo
               - step:
                   type: Run
                   name: Verify Repo
@@ -42,7 +41,6 @@ pipeline:
                       echo "Listing files:"
                       ls -lrt
 
-              # 🔹 Step 2: Maven Build (WAR Packaging)
               - step:
                   type: Run
                   name: Maven Build
@@ -54,7 +52,6 @@ pipeline:
                       echo "Starting Maven Build..."
                       mvn clean package -DskipTests
 
-              # 🔹 Step 3: Verify WAR Artifact
               - step:
                   type: Run
                   name: Verify WAR
@@ -63,11 +60,10 @@ pipeline:
                     shell: Sh
                     command: |
                       echo "Checking target directory..."
-                      ls -lrt target/
+                      ls -lrt target/ || echo "No target folder"
                       echo "WAR files:"
                       ls target/*.war || echo "No WAR found"
 
-              # 🔹 Step 4: Artifact Info
               - step:
                   type: Run
                   name: Artifact Info
